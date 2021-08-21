@@ -1,5 +1,4 @@
 import crypto from 'crypto'
-import { listenerCount } from 'events'
 import http from 'https'
 
 class Bitso {
@@ -54,7 +53,7 @@ class Bitso {
           if (dataObj.success) {
             resolve(dataObj.payload)
           } else {
-            reject(res.statusCode)
+            reject(res)
           }
         })
       });
@@ -82,31 +81,42 @@ class Bitso {
     }, {})
 
     const pricePromises = Object.keys(coinsMap).map(async c => {
-      switch (c) {
-        case 'ltc':
-          return { coin: c, price: 165 }
-        case 'tusd':
-          return { coin: c, price: 1 }
-        case 'mxn':
-          const { last: usdMxn } =  await this.makeRequest('/v3/ticker/', 'GET', { book: `tusd_${c}` })
+      try {
+        switch (c) {
+          case 'bch':
+            return { coin: c, price: 646 }
+          case 'ltc':
+            return { coin: c, price: 170 }
+          case 'tusd':
+            return { coin: c, price: 1 }
+          case 'mxn':
+            const { last: usdMxn } =  await this.makeRequest('/v3/ticker/', 'GET', { book: `tusd_${c}` })
+  
+            return { coin: c, price: 1 / usdMxn}
+          default:
+            const { last } =  await this.makeRequest('/v3/ticker/', 'GET', { book: `${c}_usd` })
+  
+            return { coin: c, price: last}
+        }
+      } catch (error) {
+        console.log(error)
 
-          return { coin: c, price: 1 / usdMxn}
-        default:
-          const { last } =  await this.makeRequest('/v3/ticker/', 'GET', { book: `${c}_usd` })
-
-          return { coin: c, price: last}
+        throw error
       }
     })
 
     const prices = await Promise.allSettled(pricePromises)
 
     prices.forEach(p => {
-      coinsMap[p.value.coin].usd_value = coinsMap[p.value.coin].amount * p.value.price 
+      const coin = p?.value?.coin
+      if (!coin) return
+      coinsMap[coin].usd_value = coinsMap[coin].amount * p?.value?.price 
     })
 
     coinsMap.total_usd = Object.values(coinsMap).reduce((acc, curr) => {
       return acc + curr.usd_value
     }, 0)
+
 
     return coinsMap
   }

@@ -45,9 +45,15 @@ async function main() {
           return { wallet: c.constructor.name, total_usd_value: balance }
         })
 
-        const balances = (await Promise.allSettled(balancesPromises)).map(p => p.value)
+        let balances = []
+        try {
+          balances = (await Promise.allSettled(balancesPromises)).map(p => p.value)
+        } catch (error) {
+          console.error(error)
+        }
 
         const wallets_total_usd = balances.reduce((acc, curr) => {
+          if (!curr) return acc
           return acc + curr.total_usd_value
         }, 0)
 

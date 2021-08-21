@@ -10,7 +10,9 @@ export default class Binance {
     const { data } = await this.spotClient.accountSnapshot('SPOT') // I dont really trust this method
     const { data: { price: btcPrice } } = await this.spotClient.avgPrice('BTCUSDT')
 
-    const total_usd = data.snapshotVos[0].data.totalAssetOfBtc * btcPrice 
+    const [ lastSnapshot ] = data.snapshotVos.sort((a, b) => a.updateTime < b.updateTime ? 1 : -1)
+
+    const total_usd = lastSnapshot.data.totalAssetOfBtc * btcPrice 
 
     return Number(Number(total_usd).toFixed(2))
   }
