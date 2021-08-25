@@ -1,9 +1,9 @@
 import ftx from 'ftx-api'
 
 export default class FTX {
-  constructor(apiKey, apiSecret) {
+  constructor({ apiKey, secret }) {
     const { RestClient } = ftx
-    this.restClient = new RestClient(apiKey, apiSecret)
+    this.restClient = new RestClient(apiKey, secret)
   }
 
   async getUSDBalance() {

@@ -11,6 +11,7 @@
   "license": "ISC",
   "dependencies": {
     "@binance/connector": "^1.0.0",
+    "ccxt": "^1.55.22",
     "commander": "^8.1.0",
     "dotenv": "^10.0.0",
     "ftx-api": "^1.0.13"

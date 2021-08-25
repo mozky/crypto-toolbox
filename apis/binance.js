@@ -1,9 +1,9 @@
 import binance from '@binance/connector'
 
 export default class Binance {
-  constructor(apiKey, apiSecret) {
+  constructor({ apiKey, secret }) {
     const { Spot } = binance
-    this.spotClient = new Spot(apiKey, apiSecret)
+    this.spotClient = new Spot(apiKey, secret)
   }
 
   async getUSDBalance() {

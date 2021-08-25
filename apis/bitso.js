@@ -2,8 +2,8 @@ import crypto from 'crypto'
 import http from 'https'
 
 class Bitso {
-  constructor(key, secret) {
-    this.apiKey = key
+  constructor({ apiKey, secret }) {
+    this.apiKey = apiKey
     this.apiSecret = secret
     this.host = 'api.bitso.com'
   }

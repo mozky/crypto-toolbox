@@ -2,8 +2,8 @@ import crypto from 'crypto'
 import http from 'https'
 
 class Huobi {
-  constructor(key, secret) {
-    this.apiKey = key
+  constructor({ apiKey, secret }) {
+    this.apiKey = apiKey
     this.apiSecret = secret
   }
 
